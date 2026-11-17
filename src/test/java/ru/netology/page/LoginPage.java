@@ -23,15 +23,15 @@ public class LoginPage {
         passwordField.shouldBe(visible).setValue(info.getPassword());
 
         SelenideElement codeField = $("[data-test-id='code'] input");
-        for (int attempt = 0; attempt < 5; attempt++) {
+        for (int attempt = 0; attempt < 2; attempt++) {
             loginButton.shouldBe(enabled).click();
             try {
-                codeField.shouldBe(visible, Duration.ofSeconds(15));
+                codeField.shouldBe(visible, Duration.ofSeconds(5));
                 return new VerificationPage();
             } catch (ElementNotFound ignored) {
             }
         }
-        errorNotification.shouldBe(visible, Duration.ofSeconds(10));
+        errorNotification.shouldBe(visible, Duration.ofSeconds(3));
         throw new AssertionError("Не удалось перейти к вводу кода. Текущий URL: "
                 + WebDriverRunner.getWebDriver().getCurrentUrl());
     }
