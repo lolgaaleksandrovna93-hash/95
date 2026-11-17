@@ -19,7 +19,7 @@ public class DashboardPage {
     private static final Pattern BALANCE_PATTERN = Pattern.compile("-?\\d+");
 
     public DashboardPage() {
-        $("[data-test-id='dashboard']").shouldBe(visible, Duration.ofSeconds(15));
+        $("[data-test-id='dashboard']").shouldBe(visible, Duration.ofSeconds(10));
     }
 
     private SelenideElement findCard(String cardNumber) {
@@ -47,17 +47,15 @@ public class DashboardPage {
 
     public TransferPage goToReplenish(String cardNumber) {
         SelenideElement button = findCard(cardNumber).$(byText("Пополнить"));
-        SelenideElement amountField = $("[data-test-id='amount'] input");
 
-        for (int attempt = 0; attempt < 3; attempt++) {
-            button.shouldBe(visible, enabled).click();
-            try {
-                amountField.shouldBe(visible, Duration.ofSeconds(10));
-                return new TransferPage();
-            } catch (ElementNotFound ignored) {
-            }
+        button.shouldBe(visible, enabled).click();
+        try {
+            $("[data-test-id='amount'] input").shouldBe(visible, Duration.ofSeconds(5));
+            return new TransferPage();
+        } catch (ElementNotFound e) {
+            button.shouldBe(enabled).click();
         }
-        throw new AssertionError("Не удалось открыть форму перевода после трёх кликов по «Пополнить»");
+        $("[data-test-id='amount'] input").shouldBe(visible, Duration.ofSeconds(5));
+        return new TransferPage();
     }
 }
-
